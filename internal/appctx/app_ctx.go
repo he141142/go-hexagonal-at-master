@@ -10,6 +10,8 @@ type AppContext interface {
 	Viper() config.IViper
 }
 
+type Port int
+
 type appContext struct {
 	logger logger.ILogger
 	viper  config.IViper

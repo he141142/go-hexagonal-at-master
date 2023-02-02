@@ -2,10 +2,10 @@ package ent
 
 import (
 	"context"
-	"entgo.io/ent/dialect"
 	sql "database/sql"
-	"fmt"
+	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
+	"fmt"
 
 	"hex-base/internal/appctx"
 	"hex-base/internal/constant"
@@ -42,17 +42,24 @@ func NewEntProvider(appCtx appctx.AppContext, config database.DatabaseConfig) *e
 
 func Connection(appCtx appctx.AppContext, config database.DatabaseConfig) (*ent.Client, error) {
 
+	fmt.Println("----------------------------")
 	//migration(connectionStr)
 	dbDriver := constant.ConvertDriver(config.Driver())
-	var connectionStr = ""
+	var connectionStr = getPostgresConnectionString(config)
+
 	switch dbDriver {
 	case constant.POSTGRES:
 	case constant.MYSQL:
 	default:
 		connectionStr = getPostgresConnectionString(config)
 	}
+	fmt.Println(dbDriver)
+	fmt.Println(dbDriver)
 
 	dsn := connectionStr
+	appCtx.Logger().Infof("dsn")
+
+	appCtx.Logger().Infof(dsn)
 	db, err := sql.Open(dialect.Postgres, dsn)
 
 	if err != nil {
@@ -101,6 +108,9 @@ func getPostgresConnectionString(config database.DatabaseConfig) string {
 			}
 			return fmt.Sprintf("?sslmode=%s", dbSSLMode)
 		}())
+
+	fmt.Println(connectionStr)
+	fmt.Println("DSADASDSDASD")
 
 	return connectionStr
 }

@@ -22,12 +22,14 @@ type config struct {
 	dbSQL         sql.SqlAdapter
 	dbNoSQL       any
 	ctxTimeout    time.Duration
-	webServerPort router.Port
+	webServerPort appctx.Port
 	webServer     router.Server
 }
 
-func NewConfig() *config {
-	return &config{}
+func NewConfig(appCtx appctx.AppContext) *config {
+	return &config{
+		appCtx: appCtx,
+	}
 }
 
 func (c *config) ContextTimeout(t time.Duration) *config {
@@ -108,7 +110,7 @@ func (c *config) WebServerPort(port string) *config {
 		c.logger.Fatalln(err)
 	}
 
-	c.webServerPort = router.Port(p)
+	c.webServerPort = appctx.Port(p)
 	return c
 }
 

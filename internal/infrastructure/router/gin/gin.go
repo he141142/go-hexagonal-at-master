@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"hex-base/internal/appctx"
 	"hex-base/internal/core/adapters/logger"
 	"hex-base/internal/core/adapters/repo/sql_type/sql"
 	"hex-base/internal/core/adapters/validator"
-	router2 "hex-base/internal/infrastructure/router"
+	"hex-base/internal/infrastructure/router/gin/handlers/form"
 	"net/http"
 	"os"
 	"os/signal"
@@ -21,14 +22,14 @@ type ginEngine struct {
 	db         sql.SqlAdapter
 	validator  validator.ValidatorAdapter
 	ctxTimeout time.Duration
-	port       router2.Port
+	port       appctx.Port
 }
 
 func NewGinServer(
 	log logger.ILogger,
 	db sql.SqlAdapter,
 	validator validator.ValidatorAdapter,
-	port router2.Port,
+	port appctx.Port,
 	t time.Duration,
 ) *ginEngine {
 	return &ginEngine{
@@ -80,14 +81,17 @@ func (g ginEngine) Listen() {
 /* TODO ADD MIDDLEWARE */
 func (g ginEngine) setAppHandlers(router *gin.Engine) {
 
-	router.Group("/api/v1")
+	v1:=router.Group("/api/v1")
 
-	//router.POST("/v1/transfers", g.buildCreateTransferAction())
-	//router.GET("/v1/transfers", g.buildFindAllTransferAction())
-	//
-	//router.GET("/v1/accounts/:account_id/balance", g.buildFindBalanceAccountAction())
-	//router.POST("/v1/accounts", g.buildCreateAccountAction())
-	//router.GET("/v1/accounts", g.buildFindAllAccountAction())
-	//
-	//router.GET("/v1/health", g.healthcheck())
+	 formApi:= form.NewFormAPIBuilder().
+		BelongToRouter(v1).
+		InjectLogger(g.log).
+		InjectRepo(g.db).
+		WithTimeout(g.ctxTimeout).
+		InjectValidator(g.validator).
+		ContextPath("/form").
+		Setup()
+
+	 fmt.Println(formApi.ApiInfo())
+
 }

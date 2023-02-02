@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/pingcap/log"
 	"github.com/spf13/viper"
 	"sync"
@@ -33,6 +34,8 @@ func (vp *_viper) Get(key string) string {
 	value := ""
 	value = vp.instance.GetString(key)
 	//log.Info(fmt.Sprintf("key: %v value: %v", key, value))
+	fmt.Println("======================")
+	fmt.Println(value)
 	return value
 }
 
@@ -49,11 +52,12 @@ func (vp *_viper) IsSet(key string) bool {
 // cf : config file directory
 func (vp *_viper) UseEnv() IViper {
 	vp.instance.SetConfigFile("dev.env")
-	vp.instance.SetEnvPrefix("dev")
+	//vp.instance.SetEnvPrefix("dev")
 	vp.instance.AutomaticEnv()
 	if err := vp.instance.ReadInConfig(); err != nil {
 		panic(err.(any))
 	}
+	fmt.Println(vp.instance.Get("DB_HOST"))
 	return vp
 }
 

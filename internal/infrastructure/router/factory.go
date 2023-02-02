@@ -2,6 +2,7 @@ package router
 
 import (
 	"errors"
+	"hex-base/internal/appctx"
 	"hex-base/internal/core/adapters/logger"
 	"hex-base/internal/core/adapters/repo/sql_type/sql"
 	"hex-base/internal/core/adapters/validator"
@@ -13,7 +14,6 @@ type Server interface {
 	Listen()
 }
 
-type Port int64
 
 var (
 	errInvalidWebServerInstance = errors.New("invalid router server instance")
@@ -33,7 +33,7 @@ func NewWebServerFactory(
 	dbSQL sql.SqlAdapter,
 	dbNoSQL any,
 	validator validator.ValidatorAdapter,
-	port Port,
+	port appctx.Port,
 	ctxTimeout time.Duration,
 ) (Server, error) {
 	switch instance {
