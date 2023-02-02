@@ -19,14 +19,16 @@ var (
 	errInvalidWebServerInstance = errors.New("invalid router server instance")
 )
 
+type RouterFramework int
+
 const (
-	InstanceGorillaMux int = iota
+	InstanceGorillaMux RouterFramework = iota
 	InstanceGin
 )
 
 
 func NewWebServerFactory(
-	instance int,
+	instance RouterFramework,
 	log logger.ILogger,
 	dbSQL sql.SqlAdapter,
 	dbNoSQL any,

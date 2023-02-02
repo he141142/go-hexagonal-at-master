@@ -12,13 +12,16 @@ var (
 	errInvalidValidatorInstance = errors.New("invalid validator instance")
 )
 
+type ValidatorType int
+
 const (
-	InstanceGoPlayground int = iota
+	PLAYGROUND_INSTANCE ValidatorType = iota
 )
 
-func NewValidatorFactory(instance int) (validator.ValidatorAdapter, error) {
+
+func NewValidatorFactory(instance ValidatorType) (validator.ValidatorAdapter, error) {
 	switch instance {
-	case InstanceGoPlayground:
+	case PLAYGROUND_INSTANCE:
 		return NewGoPlayground()
 	default:
 		return nil, errInvalidValidatorInstance
