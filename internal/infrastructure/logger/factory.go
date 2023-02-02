@@ -2,7 +2,7 @@ package logger
 
 import (
 	"errors"
-	"github.com/gsabadini/go-bank-transfer/adapter/logger"
+	logger2 "hex-base/internal/core/adapters/logger"
 )
 
 type TypeLogger int32
@@ -21,7 +21,7 @@ var (
 	errInvalidLoggerInstance = errors.New("invalid log instance")
 )
 
-func NewLoggerFactory(instanceType TypeLogger) (logger.Logger, error) {
+func NewLoggerFactory(instanceType TypeLogger) (logger2.ILogger, error) {
 	switch instanceType {
 	case ZapType:
 		if loggerTyp, err := NewZapLogger(); err != nil {

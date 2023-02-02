@@ -5,12 +5,11 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	logger3 "github.com/gsabadini/go-bank-transfer/adapter/logger"
 	_ "github.com/gsabadini/go-bank-transfer/infrastructure/log"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	logger2 "gorm.io/gorm/logger"
+	gorm_log "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"hex-base/internal/appctx"
 	"hex-base/internal/constant"
@@ -44,7 +43,7 @@ func migration(connectionStr string, log logger.ILogger) {
 
 	if err != nil {
 		fmt.Println("migrate err: ", err)
-		log.WithFields(logger3.Fields(logrus.Fields{
+		log.WithFields(logger.Fields(logrus.Fields{
 			"migrate-issue": err.Error(),
 		}))
 
@@ -53,7 +52,7 @@ func migration(connectionStr string, log logger.ILogger) {
 
 	if err := m.Up(); err != nil {
 		fmt.Println("migrate up err: ", err)
-		log.WithFields(logger3.Fields{
+		log.WithFields(logger.Fields{
 			"migrate-up-issue": err.Error(),
 		})
 	}
@@ -80,21 +79,21 @@ func Connection(appCtx appctx.AppContext, config database.DatabaseConfig) *gorm.
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
-		Logger: logger2.Default.LogMode(logger2.Info),
+		Logger: gorm_log.Default.LogMode(gorm_log.Info),
 	})
 
 	if err != nil {
-		log.WithFields(logger3.Fields{
+		log.WithFields(logger.Fields{
 			"database":   "form-service postgres database",
 			"connection": "disconnected",
 			"issue":      "connection issue",
 			"message":    err.Error(),
-		}).Fatal("form-service postgres db issue")
+		}).Fatalln("form-service postgres db issue")
 	} else {
-		log.WithFields(logger3.Fields{
+		log.WithFields(logger.Fields{
 			"database":   "form-service postgres database",
 			"connection": "connected",
-		}).Info("form-service postgres db connected")
+		}).Infof("form-service postgres db connected")
 	}
 	return db
 }

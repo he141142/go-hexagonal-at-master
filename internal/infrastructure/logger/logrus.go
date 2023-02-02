@@ -1,16 +1,27 @@
 package logger
 
-
 import (
-	"github.com/gsabadini/go-bank-transfer/adapter/logger"
 	"github.com/sirupsen/logrus"
+	logger2 "hex-base/internal/core/adapters/logger"
 )
 
 type logrusLogger struct {
 	logger *logrus.Logger
 }
 
-func NewLogrusLogger() logger.Logger {
+func (l *logrusLogger) WithError(err error) logger2.ILogger {
+	return &logrusLogEntry{
+		entry: l.logger.WithError(err),
+	}
+}
+
+func (l *logrusLogger) WithFields(fields logger2.Fields) logger2.ILogger {
+	return &logrusLogEntry{
+		entry: l.logger.WithFields(convertToLogrusFields(fields)),
+	}
+}
+
+func NewLogrusLogger() logger2.ILogger {
 	log := logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{
 		TimestampFormat: "2006-01-02 15:04:05",
@@ -35,17 +46,6 @@ func (l *logrusLogger) Fatalln(args ...interface{}) {
 	l.logger.Fatalln(args...)
 }
 
-func (l *logrusLogger) WithFields(fields logger.Fields) logger.Logger {
-	return &logrusLogEntry{
-		entry: l.logger.WithFields(convertToLogrusFields(fields)),
-	}
-}
-
-func (l *logrusLogger) WithError(err error) logger.Logger {
-	return &logrusLogEntry{
-		entry: l.logger.WithError(err),
-	}
-}
 
 type logrusLogEntry struct {
 	entry *logrus.Entry
@@ -67,19 +67,19 @@ func (l *logrusLogEntry) Fatalln(args ...interface{}) {
 	l.entry.Fatalln(args...)
 }
 
-func (l *logrusLogEntry) WithFields(fields logger.Fields) logger.Logger {
+func (l *logrusLogEntry) WithFields(fields logger2.Fields) logger2.ILogger {
 	return &logrusLogEntry{
 		entry: l.entry.WithFields(convertToLogrusFields(fields)),
 	}
 }
 
-func (l *logrusLogEntry) WithError(err error) logger.Logger {
+func (l *logrusLogEntry) WithError(err error) logger2.ILogger {
 	return &logrusLogEntry{
 		entry: l.entry.WithError(err),
 	}
 }
 
-func convertToLogrusFields(fields logger.Fields) logrus.Fields {
+func convertToLogrusFields(fields logger2.Fields) logrus.Fields {
 	logrusFields := logrus.Fields{}
 	for index, field := range fields {
 		logrusFields[index] = field

@@ -59,7 +59,7 @@ func (g ginEngine) Listen() {
 	go func() {
 		g.log.WithFields(logger.Fields{"port": g.port}).Infof("Starting HTTP Server")
 		if err := server.ListenAndServe(); err != nil {
-			g.log.WithError(err).Fatal("Error starting HTTP server")
+			g.log.WithError(err).Fatalln("Error starting HTTP server")
 		}
 	}()
 
@@ -71,7 +71,7 @@ func (g ginEngine) Listen() {
 	}()
 
 	if err := server.Shutdown(ctx); err != nil {
-		g.log.WithError(err).Fatal("Server Shutdown Failed")
+		g.log.WithError(err).Fatalln("Server Shutdown Failed")
 	}
 
 	g.log.Infof("Service down")
