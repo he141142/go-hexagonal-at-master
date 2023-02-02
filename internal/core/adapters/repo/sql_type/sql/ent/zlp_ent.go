@@ -34,7 +34,7 @@ func (adapter *entAdapter) TodoRepository() ent_todo.TodoStorage {
 
 func NewEntAdapter(client *ent.Client) EntAdapter {
 	return &entAdapter{
-		client:      nil,
+		client:      client,
 		formStorage: ent_form.NewFormStorage(client),
 		todoStorage: ent_todo.NewTodoStorage(client),
 	}

@@ -38,3 +38,11 @@ func (t *Todo) Name() string {
 func (t *Todo) Task() string {
 	return t.task
 }
+
+func NewTodo(id uint, name string, task string) *Todo {
+	return &Todo{
+		id: id,
+		name: name,
+		task: task,
+	}
+}

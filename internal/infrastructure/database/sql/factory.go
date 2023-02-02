@@ -7,11 +7,12 @@ import (
 )
 
 func NewFactorySql(lib constant.DBFrameWork,appCtx appctx.AppContext ) (dbAdapter.SqlAdapter, error) {
+	_sqlActor := NewSqlActor(appCtx)
 	switch lib {
 	case constant.GORM:
-		return NewSqlActor(appCtx).SetGormFramework(), nil
+		return _sqlActor.SetGormFramework(), nil
 	case constant.ENT:
-		return NewSqlActor(appCtx).SetEntFramework(), nil
+		return _sqlActor.SetEntFramework(), nil
 	}
 	return nil,nil
 }

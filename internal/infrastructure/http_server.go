@@ -56,6 +56,7 @@ func (c *config) DbSQL(framework constant.DBFrameWork) *config {
 		return nil
 	}
 	db, err := sql2.NewFactorySql(framework, c.appCtx)
+
 	if err != nil {
 		c.logger.Fatalln(err, "Could not make a connection to the database")
 	}

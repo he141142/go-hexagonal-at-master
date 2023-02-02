@@ -25,14 +25,17 @@ import (
 
 type gormProvider struct {
 	//Adapter
-	db *gorm.DB
+	db        *gorm.DB
 	formStore form.FormStorage
 	todoStore todo.TodoStorage
 }
 
 func NewGormProvider(appCtx appctx.AppContext, config database.DatabaseConfig) *gormProvider {
+	db := Connection(appCtx, config)
 	return &gormProvider{
-		db: Connection(appCtx, config),
+		db:        db,
+		formStore: form.NewFormStorage(db),
+		todoStore: todo.NewTodoStorage(db),
 	}
 }
 
